@@ -8,18 +8,39 @@
 
 import Foundation
 
+public func progress(fn: @autoclosure () -> ()) -> Progress {
+    return progress { source in
+        source.becomeCurrentWithPendingUnitCount(source.totalUnitCount)
+        fn()
+        source.resignCurrent()
+    }
+}
+
+public func progress(fn: ProgressSource -> ()) -> Progress {
+    return progress(100, fn)
+}
+
+public func progress(totalUnitCount: Int64, fn: ProgressSource -> ()) -> Progress {
+    let source = ProgressSource(totalUnitCount: totalUnitCount)
+    fn(source)
+    return source.progress
+}
+
+public func progress<T>(totalUnitCount: Int64, fn: ProgressSource -> (T)) -> (Progress, T) {
+    let source = ProgressSource(totalUnitCount: totalUnitCount)
+    let res = fn(source)
+    return (source.progress, res)
+}
+
 typealias KVOContext = UnsafeMutablePointer<UInt8>
 
 public class Progress : NSObject {
     let fractionCompletedKVOContext = KVOContext()
     
-    private let progress: NSProgress
+    internal let progress: NSProgress
     public typealias ProgressCallback = (Double) -> ()
     
     private var progressCallbacks = [ProgressCallback]()
-    
-    private var cancellationReported = false
-    private var pausingReported = false
     
     private let callbackSemaphore = dispatch_semaphore_create(1)
     
@@ -79,15 +100,23 @@ public class Progress : NSObject {
 
 // NSProgress proxy
 extension Progress {
-    public var totalUnitCount: Int64 {
+    public internal(set) var totalUnitCount: Int64 {
         get {
             return self.progress.totalUnitCount
         }
+        set(newTotal) {
+            assert(newTotal >= self.completedUnitCount)
+            self.progress.totalUnitCount = newTotal
+        }
     }
     
-    public var completedUnitCount: Int64 {
+    public internal(set) var completedUnitCount: Int64 {
         get {
             return self.progress.completedUnitCount
+        }
+        set(newUnitCount) {
+            assert(newUnitCount <= self.totalUnitCount)
+            self.progress.completedUnitCount = newUnitCount
         }
     }
     
@@ -115,9 +144,12 @@ extension Progress {
         }
     }
     
-    public var cancellable: Bool {
+    public internal(set) var cancellable: Bool {
         get {
             return self.progress.cancellable
+        }
+        set(newCancellable) {
+            self.progress.cancellable = cancellable
         }
     }
     
@@ -132,9 +164,12 @@ extension Progress {
         self.progress.cancel()
     }
     
-    public var pausable: Bool {
+    public internal(set) var pausable: Bool {
         get {
             return self.progress.pausable
+        }
+        set(newPausable) {
+            self.progress.pausable = newPausable
         }
     }
     
@@ -161,156 +196,16 @@ extension Progress {
         }
     }
     
-    
-
-}
-
-public class MutableProgress : Progress {
-    
-    public typealias CancellationCallback = () -> ()
-    public typealias PausingCallback = () -> ()
-    
-    private var cancellationCallbacks = [CancellationCallback]()
-    private var pausingCallbacks = [PausingCallback]()
-    
-    public override init(progress: NSProgress) {
-        super.init(progress: progress)
-        
-        self.progress.cancellationHandler = { [weak self] in
-            self?.reportCancellation()
-            return
-        }
-    }
-    
-    public func captureProgress(pendingUnitCount: Int64, fn: () -> ()) {
-        self.becomeCurrentWithPendingUnitCount(pendingUnitCount)
-        fn()
-        self.resignCurrent()
-    }
-    
-    public func onCancel(fn: CancellationCallback) -> Self {
-        dispatch_semaphore_wait(self.callbackSemaphore, DISPATCH_TIME_FOREVER)
-        if self.cancellationReported {
-            if self.cancelled {
-                fn()
-            }
-        } else {
-            self.cancellationCallbacks.append {
-                let keepAliveSelf = self
-                fn()
-            }
-        }
-        dispatch_semaphore_signal(self.callbackSemaphore)
-        return self
-    }
-    
-    public func onPause(fn: PausingCallback) -> Self {
-        dispatch_semaphore_wait(self.callbackSemaphore, DISPATCH_TIME_FOREVER)
-        if self.pausingReported {
-            if self.paused {
-                fn()
-            }
-        } else {
-            self.pausingCallbacks.append {
-                let keepAliveSelf = self
-                fn()
-            }
-        }
-        dispatch_semaphore_signal(self.callbackSemaphore)
-        return self
-    }
-    
-    func reportCancellation() {
-        dispatch_semaphore_wait(self.callbackSemaphore, DISPATCH_TIME_FOREVER)
-        assert(self.cancelled)
-        
-        for cancellationCallback in self.cancellationCallbacks {
-            cancellationCallback()
-        }
-        
-        self.cancellationCallbacks.removeAll()
-        self.cancellationReported = true
-        dispatch_semaphore_signal(self.callbackSemaphore)
-    }
-    
-    func reportPausing() {
-        dispatch_semaphore_wait(self.callbackSemaphore, DISPATCH_TIME_FOREVER)
-        assert(self.paused)
-        
-        for pausingCallback in self.pausingCallbacks {
-            pausingCallback()
-        }
-        
-        self.pausingCallbacks.removeAll()
-        self.pausingReported = true
-        dispatch_semaphore_signal(self.callbackSemaphore)
-    }
-}
-
-// NSProgress proxy
-extension MutableProgress {
-    public override var completedUnitCount: Int64 {
-        get {
-            return self.progress.completedUnitCount
-        }
-        set(newUnitCount) {
-            self.progress.completedUnitCount = newUnitCount
-        }
-    }
-    
-    public override var totalUnitCount: Int64 {
-        get {
-            return super.totalUnitCount
-        }
-        set(newTotal) {
-            self.progress.totalUnitCount = newTotal
-        }
-    }
-    
-    public func becomeCurrentWithPendingUnitCount(pendingUnitCount: Int64) {
+    internal func becomeCurrentWithPendingUnitCount(pendingUnitCount: Int64) {
         self.progress.becomeCurrentWithPendingUnitCount(pendingUnitCount)
     }
     
-    public func resignCurrent() {
+    internal func resignCurrent() {
         self.progress.resignCurrent()
-    }
-    
-    public override var cancellable: Bool {
-        get {
-            return self.progress.cancellable
-        }
-        set(newCancellable) {
-            self.progress.cancellable = cancellable
-        }
-    }
-    
-    public override var pausable: Bool {
-        get {
-            return self.progress.pausable
-        }
-        set(newPausable) {
-            self.progress.pausable = newPausable
-        }
     }
     
     public func setUserInfoObject(object: AnyObject?, forKey key: String) {
         self.progress.setUserInfoObject(object, forKey: key)
     }
-}
 
-
-public func progress(fn: MutableProgress -> ()) -> Progress {
-    return progress(100, fn)
-}
-
-public func progress(totalUnitCount: Int64, fn: MutableProgress -> ()) -> Progress {
-    let progress = MutableProgress(totalUnitCount: totalUnitCount)
-    fn(progress)
-    return Progress(progress: progress.progress)
-}
-
-public func progress<T>(totalUnitCount: Int64, fn: MutableProgress -> (T)) -> (Progress, T) {
-    let progress = MutableProgress(totalUnitCount: totalUnitCount)
-    let res = fn(progress)
-    return (Progress(progress: progress.progress), res)
 }
