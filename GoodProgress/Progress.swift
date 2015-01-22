@@ -9,6 +9,10 @@
 import Foundation
 
 public func progress(fn: @autoclosure () -> ()) -> Progress {
+    return progress(100, fn)
+}
+
+public func progress(totalUnitCount: Int64, fn: @autoclosure () -> ()) -> Progress {
     return progress { source in
         source.becomeCurrentWithPendingUnitCount(source.totalUnitCount)
         fn()
