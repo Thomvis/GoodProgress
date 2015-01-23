@@ -48,6 +48,24 @@ public class ProgressSource {
         }
     }
     
+    public var cancellable: Bool {
+        get {
+            return self.progress.cancellable
+        }
+        set(newCancellable) {
+            self.progress.cancellable = newCancellable
+        }
+    }
+    
+    public var pausable: Bool {
+        get {
+            return self.progress.pausable
+        }
+        set(newPausable) {
+            self.progress.pausable = newPausable
+        }
+    }
+    
     public func completeUnit() {
         dispatch_semaphore_wait(self.completionSemaphore, DISPATCH_TIME_FOREVER)
         self.progress.completedUnitCount++

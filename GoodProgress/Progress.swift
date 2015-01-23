@@ -64,7 +64,7 @@ public class Progress : NSObject {
         self.init(progress: NSProgress(totalUnitCount: totalUnitCount))
     }
     
-    public convenience init(parent: NSProgress, userInfo: [NSObject:AnyObject]?) {
+    internal convenience init(parent: NSProgress, userInfo: [NSObject:AnyObject]?) {
         self.init(progress: NSProgress(parent: parent, userInfo: userInfo))
     }
     
@@ -88,7 +88,7 @@ public class Progress : NSObject {
         return self
     }
     
-    func reportProgress() {
+    internal func reportProgress() {
         dispatch_semaphore_wait(self.callbackSemaphore, DISPATCH_TIME_FOREVER)
         for progressCallback in self.progressCallbacks {
             progressCallback(self.fractionCompleted)
@@ -153,13 +153,13 @@ extension Progress {
             return self.progress.cancellable
         }
         set(newCancellable) {
-            self.progress.cancellable = cancellable
+            self.progress.cancellable = newCancellable
         }
     }
     
     public var cancelled: Bool {
         get {
-            return self.cancelled
+            return self.progress.cancelled
         }
     }
     
