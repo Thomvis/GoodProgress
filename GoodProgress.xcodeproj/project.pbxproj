@@ -8,10 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		E92528F81A7032DA000E2BDF /* ProgressSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92528F71A7032DA000E2BDF /* ProgressSource.swift */; };
-		E92528FA1A703345000E2BDF /* ProgressSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92528F91A703345000E2BDF /* ProgressSourceTests.swift */; };
 		E92528FC1A703699000E2BDF /* UseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92528FB1A703699000E2BDF /* UseCaseTests.swift */; };
 		E92528FE1A703731000E2BDF /* GoodProgressTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92528FD1A703731000E2BDF /* GoodProgressTestCase.swift */; };
-		E925290D1A72F1C6000E2BDF /* ProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E925290C1A72F1C6000E2BDF /* ProgressTests.swift */; };
 		E9989A461A6D5FB300BD6B6F /* GoodProgress.h in Headers */ = {isa = PBXBuildFile; fileRef = E9989A451A6D5FB300BD6B6F /* GoodProgress.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9989A4C1A6D5FB300BD6B6F /* GoodProgress.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9989A401A6D5FB300BD6B6F /* GoodProgress.framework */; };
 		E9989A531A6D5FB300BD6B6F /* GoodProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9989A521A6D5FB300BD6B6F /* GoodProgressTests.swift */; };
@@ -30,10 +28,8 @@
 
 /* Begin PBXFileReference section */
 		E92528F71A7032DA000E2BDF /* ProgressSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressSource.swift; sourceTree = "<group>"; };
-		E92528F91A703345000E2BDF /* ProgressSourceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressSourceTests.swift; sourceTree = "<group>"; };
 		E92528FB1A703699000E2BDF /* UseCaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UseCaseTests.swift; sourceTree = "<group>"; };
 		E92528FD1A703731000E2BDF /* GoodProgressTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoodProgressTestCase.swift; sourceTree = "<group>"; };
-		E925290C1A72F1C6000E2BDF /* ProgressTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressTests.swift; sourceTree = "<group>"; };
 		E9989A401A6D5FB300BD6B6F /* GoodProgress.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GoodProgress.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9989A441A6D5FB300BD6B6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E9989A451A6D5FB300BD6B6F /* GoodProgress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GoodProgress.h; sourceTree = "<group>"; };
@@ -103,11 +99,9 @@
 			isa = PBXGroup;
 			children = (
 				E9989A521A6D5FB300BD6B6F /* GoodProgressTests.swift */,
-				E92528F91A703345000E2BDF /* ProgressSourceTests.swift */,
 				E9989A501A6D5FB300BD6B6F /* Supporting Files */,
 				E92528FB1A703699000E2BDF /* UseCaseTests.swift */,
 				E92528FD1A703731000E2BDF /* GoodProgressTestCase.swift */,
-				E925290C1A72F1C6000E2BDF /* ProgressTests.swift */,
 			);
 			path = GoodProgressTests;
 			sourceTree = "<group>";
@@ -237,9 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E92528FC1A703699000E2BDF /* UseCaseTests.swift in Sources */,
-				E925290D1A72F1C6000E2BDF /* ProgressTests.swift in Sources */,
 				E9989A531A6D5FB300BD6B6F /* GoodProgressTests.swift in Sources */,
-				E92528FA1A703345000E2BDF /* ProgressSourceTests.swift in Sources */,
 				E92528FE1A703731000E2BDF /* GoodProgressTestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

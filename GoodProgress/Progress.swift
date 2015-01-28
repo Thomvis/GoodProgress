@@ -42,6 +42,7 @@ public class Progress : NSObject {
     let fractionCompletedKVOContext = KVOContext()
     
     internal let progress: NSProgress
+
     public typealias ProgressCallback = (Double) -> ()
     
     private var progressCallbacks = [ProgressCallback]()
@@ -49,8 +50,12 @@ public class Progress : NSObject {
     private let callbackSemaphore = dispatch_semaphore_create(1)
     
     public init(progress: NSProgress) {
+        assert(progress.goodProgressObject == nil)
         self.progress = progress
+        
         super.init()
+        
+        self.progress.goodProgressObject = self
         
         // hook to NSProgress
         self.progress.addObserver(self, forKeyPath: "fractionCompleted", options: nil, context: self.fractionCompletedKVOContext)
@@ -109,7 +114,6 @@ extension Progress {
             return self.progress.totalUnitCount
         }
         set(newTotal) {
-            assert(newTotal >= self.completedUnitCount)
             self.progress.totalUnitCount = newTotal
         }
     }
@@ -119,7 +123,6 @@ extension Progress {
             return self.progress.completedUnitCount
         }
         set(newUnitCount) {
-            assert(newUnitCount <= self.totalUnitCount)
             self.progress.completedUnitCount = newUnitCount
         }
     }
@@ -208,8 +211,27 @@ extension Progress {
         self.progress.resignCurrent()
     }
     
+    public class func currentProgress() -> Progress? {
+        return NSProgress.currentProgress()?.goodProgressObject
+    }
+    
     public func setUserInfoObject(object: AnyObject?, forKey key: String) {
         self.progress.setUserInfoObject(object, forKey: key)
     }
 
+}
+
+private let GoodProgressObjectKey = UnsafePointer<Void>()
+
+extension NSProgress {
+    
+    internal var goodProgressObject: Progress? {
+        get {
+            return objc_getAssociatedObject(self, GoodProgressObjectKey) as? Progress
+        }
+        set(newObject) {
+            objc_setAssociatedObject(self, GoodProgressObjectKey, newObject, UInt(OBJC_ASSOCIATION_ASSIGN))
+        }
+    }
+    
 }

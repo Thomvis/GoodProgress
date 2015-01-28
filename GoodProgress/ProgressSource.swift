@@ -31,6 +31,11 @@ public class ProgressSource {
             self?.reportCancellation()
             return
         }
+        
+        self.progress.progress.pausingHandler = { [weak self] in
+            self?.reportPausing()
+            return
+        }
     }
     
     public var totalUnitCount: Int64 {
