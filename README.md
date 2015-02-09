@@ -3,7 +3,13 @@ A delightful progress reporting framework for Swift powered by [NSProgress](http
 
 NSProgress is a relatively new (iOS 7, OS X 10.9), often overlooked but awesome addition to the Cocoa framework. It provides a way to report the progress of long running tasks across threads and to pause or cancel those tasks. GoodProgress is a tiny wrapper around NSProgress that aims to make reporting progress super nice in Swift.
 
-If you're looking for documentation on NSProgress, check out the [class reference](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSProgress_Class/Reference/Reference.html), ~~the OS X 10.9 foundation release notes~~ (update: it's gone), the excellent [blog post](http://oleb.net/blog/2014/03/nsprogress/) by Ole Begemann and this insightful [example project + post](http://jaanus.com/blog/2015/01/24/an-example-on-how-to-use-nsprogress/) by Jaanus Kase.
+If you're looking for documentation on NSProgress, check out the following sources:
+
+- [class reference](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSProgress_Class/Reference/Reference.html)
+- ~~the OS X 10.9 foundation release notes~~ (update: it's gone)
+- the excellent [blog post](http://oleb.net/blog/2014/03/nsprogress/) by Ole Begemann
+- an [example project + post](http://jaanus.com/blog/2015/01/24/an-example-on-how-to-use-nsprogress/) by Jaanus Kase
+- another good [blog post](http://robots.thoughtbot.com/asynchronous-nsprogress) by thoughtbot's Keith Smiley
 
 ## Current State
 GoodProgress is in very early stages of development. It should not be used for purposes other than experimentation, yet.
