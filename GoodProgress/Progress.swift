@@ -22,11 +22,11 @@
 
 import Foundation
 
-public func progress(fn: @autoclosure () -> ()) -> Progress {
+public func progress(@autoclosure fn: () -> ()) -> Progress {
     return progress(100, fn)
 }
 
-public func progress(totalUnitCount: Int64, fn: @autoclosure () -> ()) -> Progress {
+public func progress(totalUnitCount: Int64, @autoclosure fn: () -> ()) -> Progress {
     return progress { source in
         source.becomeCurrentWithPendingUnitCount(source.totalUnitCount)
         fn()
@@ -34,17 +34,17 @@ public func progress(totalUnitCount: Int64, fn: @autoclosure () -> ()) -> Progre
     }
 }
 
-public func progress(fn: ProgressSource -> ()) -> Progress {
+public func progress(@noescape fn: ProgressSource -> ()) -> Progress {
     return progress(100, fn)
 }
 
-public func progress(totalUnitCount: Int64, fn: ProgressSource -> ()) -> Progress {
+public func progress(totalUnitCount: Int64, @noescape fn: ProgressSource -> ()) -> Progress {
     let source = ProgressSource(totalUnitCount: totalUnitCount)
     fn(source)
     return source.progress
 }
 
-public func progress<T>(totalUnitCount: Int64, fn: ProgressSource -> (T)) -> (Progress, T) {
+public func progress<T>(totalUnitCount: Int64, @noescape fn: ProgressSource -> (T)) -> (Progress, T) {
     let source = ProgressSource(totalUnitCount: totalUnitCount)
     let res = fn(source)
     return (source.progress, res)
